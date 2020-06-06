@@ -1,12 +1,16 @@
 import React from 'react';
 import './Resource.css';
+import {useRouteMatch} from "react-router-dom";
 
 function ResourceView() {
+    const match = useRouteMatch();
+    console.log(match);
+
     return (
-        <div className="Resource">
+        <div className="ResourceView">
             <header className="App-header">
                 <p>
-                    Resource view
+                    Resource view id {match.params.id}
                 </p>
                 <a href="https://reactjs.org">
                     Learn React
