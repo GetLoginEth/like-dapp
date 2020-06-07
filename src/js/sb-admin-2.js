@@ -1,5 +1,32 @@
-// todo modify to react
-(function ($) {
+// todo modify to react commented code
+
+document.addEventListener("DOMContentLoaded", function (event) {
+    // Your code to run since DOM is loaded and ready
+    init();
+});
+
+function init() {
+    /*$("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
+        $("body").toggleClass("sidebar-toggled");
+        $(".sidebar").toggleClass("toggled");
+        if ($(".sidebar").hasClass("toggled")) {
+            $('.sidebar .collapse').collapse('hide');
+        }
+
+    });*/
+
+    document.querySelectorAll('#sidebarToggle, #sidebarToggleTop').forEach(item => item.onclick = () => {
+        document.getElementsByTagName('body')[0].classList.toggle('sidebar-toggled');
+        const sidebar=document.querySelector('.sidebar');
+        sidebar.classList.toggle('toggled');
+        if(sidebar.classList.contains('toggled')){
+            document.querySelector('.sidebar .collapse').classList.toggle('hide');
+        }
+    });
+}
+
+
+/*(function ($) {
 
     // Toggle the side navigation
     $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
@@ -24,7 +51,6 @@
             $(".sidebar").addClass("toggled");
             $('.sidebar .collapse').collapse('hide');
         }
-
     });
 
     // Prevent the content wrapper from scrolling when the fixed side navigation hovered over
@@ -57,3 +83,4 @@
     });
 
 })(window.jQuery); // End of use strict
+*/

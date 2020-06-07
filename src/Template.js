@@ -1,49 +1,15 @@
 import React, {Fragment, useEffect} from 'react';
-import Chart from 'chart.js';
-import feather from 'feather-icons';
-import './css/sb-admin-2.min.css';
-//import './js/sb-admin-2.js';
 import icon from './img/icon.png';
 
 export default function Template({children, onLogout, resources, updateResources}) {
     useEffect(_ => {
         updateResources();
-        /*var ctx = document.getElementById("myChart");
-        var myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-                datasets: [{
-                    data: [15339, 21345, 18483, 24003, 23489, 24092, 12034],
-                    lineTension: 0,
-                    backgroundColor: 'transparent',
-                    borderColor: '#007bff',
-                    borderWidth: 4,
-                    pointBackgroundColor: '#007bff'
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: false
-                        }
-                    }]
-                },
-                legend: {
-                    display: false,
-                }
-            }
-        });
-        feather.replace();*/
     }, []);
 
     return <Fragment>
         <div id="wrapper">
 
-
             <ul className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
 
                 <a className="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
                     <div className="sidebar-brand-icon rotate-n-15">
@@ -295,13 +261,12 @@ export default function Template({children, onLogout, resources, updateResources
                         {children}
 
                     </div>
-
                 </div>
 
                 <footer className="sticky-footer bg-white">
                     <div className="container my-auto">
                         <div className="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2019</span>
+                            <span>Copyright &copy; Like 2020</span>
                         </div>
                     </div>
                 </footer>
@@ -328,32 +293,14 @@ export default function Template({children, onLogout, resources, updateResources
                     </div>
                     <div className="modal-footer">
                         <button className="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                        <a className="btn btn-primary" href="#" onClick={e => {
+                        <button className="btn btn-primary" type="button" data-dismiss="modal" onClick={e => {
                             e.preventDefault();
                             onLogout();
-                        }}>Logout</a>
+                        }}>Logout</button>
                     </div>
                 </div>
             </div>
         </div>
-
-        {/*<!-- Bootstrap core JavaScript-->
-        <script src="vendor/jquery/jquery.min.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-        <!-- Core plugin JavaScript-->
-        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-        <!-- Custom scripts for all pages-->
-        <script src="js/sb-admin-2.min.js"></script>
-
-        <!-- Page level plugins -->
-        <script src="vendor/chart.js/Chart.min.js"></script>
-
-        <!-- Page level custom scripts -->
-        <script src="js/demo/chart-area-demo.js"></script>
-        <script src="js/demo/chart-pie-demo.js"></script>*/}
-
 
 
     </Fragment>;
