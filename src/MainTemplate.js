@@ -1,7 +1,22 @@
 import React, {Fragment, useEffect} from 'react';
 import icon from './img/icon.png';
+import {Link, Route, Switch, useRouteMatch} from "react-router-dom";
+import Dashboard from "./Dashboard";
+import ResourceView from "./resource/ResourceView";
 
-export default function Template({children, onLogout, resources, updateResources}) {
+export default function MainTemplate({
+                                         children,
+                                         onLogout,
+                                         resources,
+                                         updateResources,
+                                         isResourcesLoading
+                                     }) {
+    let {path, url} = useRouteMatch();
+    const match = useRouteMatch(path + '/:page?/:action?/:id?');
+    const currentPage = match.params.page;
+    const currentAction = match.params.action;
+    const currentId = match.params.id;
+
     useEffect(_ => {
         updateResources();
     }, []);
@@ -11,22 +26,22 @@ export default function Template({children, onLogout, resources, updateResources
 
             <ul className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
-                <a className="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                <Link className="sidebar-brand d-flex align-items-center justify-content-center" to={`${url}`}>
                     <div className="sidebar-brand-icon rotate-n-15">
                         {/*<i className="fas fa-laugh-wink"></i>*/}
                         <img src={icon} alt=""/>
                     </div>
                     <div className="sidebar-brand-text mx-3">Like</div>
-                </a>
+                </Link>
 
 
                 <hr className="sidebar-divider my-0"/>
 
-
-                <li className="nav-item active">
-                    <a className="nav-link" href="index.html">
-                        <i className="fas fa-fw fa-tachometer-alt"></i>
-                        <span>Dashboard</span></a>
+                <li className={`nav-item ${!currentPage ? 'active' : ''}`}>
+                    <Link className="nav-link" to={`${url}`}>
+                        <i className="fas fa-fw fa-tachometer-alt"/>
+                        <span>Dashboard</span>
+                    </Link>
                 </li>
 
                 <hr className="sidebar-divider"/>
@@ -35,7 +50,7 @@ export default function Template({children, onLogout, resources, updateResources
                     Interface
                 </div>
 
-                <li className="nav-item">
+                <li className={`nav-item ${currentPage === 'resource' ? 'active' : ''}`}>
                     <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                        aria-expanded="true" aria-controls="collapseTwo">
                         <i className="fas fa-fw fa-cog"></i>
@@ -45,8 +60,14 @@ export default function Template({children, onLogout, resources, updateResources
                          data-parent="#accordionSidebar">
                         <div className="bg-white py-2 collapse-inner rounded">
                             <h6 className="collapse-header">Resources:</h6>
-                            {resources && resources.map((item, i) => <a key={i} className="collapse-item"
-                                                                        href="#">{item.title}</a>)}
+                            {resources && resources.map((item, i) => {
+                                return <Link
+                                    key={i}
+                                    className={`collapse-item 
+                                    ${(currentAction === 'view' && Number(currentId) === Number(item.id)) ? 'active' : ''}
+                                    `}
+                                    to={`${url}/resource/view/${item.id}`}>{item.title}</Link>;
+                            })}
 
                         </div>
                     </div>
@@ -70,10 +91,10 @@ export default function Template({children, onLogout, resources, updateResources
                     </div>
                 </li>*/}
 
-                <li className="nav-item">
-                    <a className="nav-link" href="charts.html">
+                <li className={`nav-item ${currentPage === 'donates' ? 'active' : ''}`}>
+                    <Link className="nav-link" to={`${url}/donates`}>
                         <i className="fas fa-fw fa-chart-area"></i>
-                        <span>Donates</span></a>
+                        <span>Donates</span></Link>
                 </li>
 
                 {/*<hr className="sidebar-divider"/>
@@ -258,8 +279,17 @@ export default function Template({children, onLogout, resources, updateResources
 
                     <div className="container-fluid">
 
-                        {children}
-
+                        <Switch>
+                            <Route exact path={`${path}`}>
+                                <Dashboard
+                                    isLoading={isResourcesLoading}
+                                    resources={resources}
+                                    onUpdate={updateResources}/>
+                            </Route>
+                            <Route path={`${path}/resource/view/:id`}>
+                                <ResourceView/>
+                            </Route>
+                        </Switch>
                     </div>
                 </div>
 
@@ -296,7 +326,8 @@ export default function Template({children, onLogout, resources, updateResources
                         <button className="btn btn-primary" type="button" data-dismiss="modal" onClick={e => {
                             e.preventDefault();
                             onLogout();
-                        }}>Logout</button>
+                        }}>Logout
+                        </button>
                     </div>
                 </div>
             </div>

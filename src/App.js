@@ -9,9 +9,9 @@ import Resources from "./resource/Resources";
 import {
     BrowserRouter as Router,
     Switch,
-    Route
+    Route, Redirect, useHistory
 } from "react-router-dom";
-import Template from "./Template";
+import MainTemplate from "./MainTemplate";
 import ResourceView from "./resource/ResourceView";
 import Authorize from "./Authorize";
 import Dashboard from "./Dashboard";
@@ -21,6 +21,7 @@ function App() {
     const [isResourcesLoading, setIsResourcesLoading] = useState(false);
     const [resources, setResources] = useState(null);
     const [userInfo, setUserInfo] = useState(null);
+    const history = useHistory();
 
     function updateResources() {
         setIsResourcesLoading(true);
@@ -28,38 +29,31 @@ function App() {
         setTimeout(_ => setIsResourcesLoading(false), 2000)
     }
 
-    const CurrentSwitch = <Switch>
-        {/*<Route path="/about">
-                        <About />
-                    </Route>*/}
-        <Route path="/resource/view/:id">
-            <ResourceView/>
-        </Route>
-        {/*<Resources isLoading={isResourcesLoading} resources={resources}
-                               onUpdate={updateResources}/>*/}
-        <Route path="/">
-            <Dashboard isLoading={isResourcesLoading} resources={resources}
-                       onUpdate={updateResources}/>
-        </Route>
-    </Switch>;
-    const CurrentTemplate = userInfo ? <Template
-            onLogout={_ => {
-                console.log('logout here');
-                setUserInfo(null);
-            }}
-            isResourcesLoading={isResourcesLoading}
-            updateResources={updateResources}
-            resources={resources}
-        >
-            {CurrentSwitch}
-        </Template>
-        :
-        <LoginTemplate onUserInfo={data => setUserInfo(data)}/>;
-
+    const LoginRoute = ({path, children}) => {
+        return userInfo ? <Redirect to={{pathname: "./"}}/> : <Route path={path}>
+            {children}
+        </Route>;
+    };
 
     return (
         <Router>
-            {CurrentTemplate}
+            <Switch>
+                <Route path="/:swarm_protocol/:swarm_hash/login">
+                    <LoginTemplate onUserInfo={data => setUserInfo(data)}/>
+                </Route>
+
+                <Route path="/:swarm_protocol/:swarm_hash">
+                    <MainTemplate
+                        onLogout={_ => {
+                            console.log('logout here');
+                            setUserInfo(null);
+                        }}
+                        isResourcesLoading={isResourcesLoading}
+                        updateResources={updateResources}
+                        resources={resources}
+                    />
+                </Route>
+            </Switch>
         </Router>
     );
 }

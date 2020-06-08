@@ -4,7 +4,6 @@ import {useRouteMatch} from "react-router-dom";
 
 function ResourceView() {
     const match = useRouteMatch();
-    console.log(match);
 
     return (
         <div className="ResourceView">
@@ -12,9 +11,7 @@ function ResourceView() {
                 <p>
                     Resource view id {match.params.id}
                 </p>
-                <a href="https://reactjs.org">
-                    Learn React
-                </a>
+
             </header>
         </div>
     );
