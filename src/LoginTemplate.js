@@ -1,7 +1,7 @@
 import React, {Fragment, useEffect, useState} from 'react';
 import icon from './img/icon.png';
 
-export default function LoginTemplate({onUserInfo}) {
+export default function LoginTemplate({ onAuthorized}) {
     const abi = [];
     const [status, setStatus] = useState('loading');
     const [authorizeUrl, setAuthorizeUrl] = useState(null);
@@ -59,11 +59,10 @@ export default function LoginTemplate({onUserInfo}) {
             const userInfo = await window.getLoginApi.getUserInfo();
             setUser(userInfo);
             //updateNotes(userInfo.usernameHash);
-            onUserInfo(userInfo);
+            onAuthorized(data.data.access_token, userInfo);
         } else {
             setStatus('authorize');
         }
-
     };
 
     useEffect(_ => {

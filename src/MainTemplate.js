@@ -5,7 +5,6 @@ import Dashboard from "./Dashboard";
 import ResourceView from "./resource/ResourceView";
 
 export default function MainTemplate({
-                                         children,
                                          onLogout,
                                          resources,
                                          updateResources,
@@ -18,22 +17,20 @@ export default function MainTemplate({
     const currentId = match.params.id;
 
     useEffect(_ => {
-        updateResources();
+        console.log('updateResources')
+        //updateResources();
     }, []);
 
     return <Fragment>
         <div id="wrapper">
-
             <ul className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-
                 <Link className="sidebar-brand d-flex align-items-center justify-content-center" to={`${url}`}>
-                    <div className="sidebar-brand-icon rotate-n-15">
+                    <div className="sidebar-brand-icon">
                         {/*<i className="fas fa-laugh-wink"></i>*/}
                         <img src={icon} alt=""/>
                     </div>
                     <div className="sidebar-brand-text mx-3">Like</div>
                 </Link>
-
 
                 <hr className="sidebar-divider my-0"/>
 
@@ -53,7 +50,7 @@ export default function MainTemplate({
                 <li className={`nav-item ${currentPage === 'resource' ? 'active' : ''}`}>
                     <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
                        aria-expanded="true" aria-controls="collapseTwo">
-                        <i className="fas fa-fw fa-cog"></i>
+                        <i className="fas fa-fw fa-cog"/>
                         <span>Resources</span>
                     </a>
                     <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo"
@@ -68,7 +65,6 @@ export default function MainTemplate({
                                     `}
                                     to={`${url}/resource/view/${item.id}`}>{item.title}</Link>;
                             })}
-
                         </div>
                     </div>
                 </li>
@@ -93,7 +89,7 @@ export default function MainTemplate({
 
                 <li className={`nav-item ${currentPage === 'donates' ? 'active' : ''}`}>
                     <Link className="nav-link" to={`${url}/donates`}>
-                        <i className="fas fa-fw fa-chart-area"></i>
+                        <i className="fas fa-fw fa-chart-area"/>
                         <span>Donates</span></Link>
                 </li>
 
