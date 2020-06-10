@@ -1,21 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.css';
 import './css/sb-admin-2.min.css';
 import './js/sb-admin-2.js';
-import Resources from "./resource/Resources";
 import {
     BrowserRouter as Router,
     Switch,
     Route, Redirect, useHistory
 } from "react-router-dom";
 import MainTemplate from "./MainTemplate";
-import ResourceView from "./resource/ResourceView";
-import Authorize from "./Authorize";
-import Dashboard from "./Dashboard";
 import LoginTemplate from "./LoginTemplate";
+import {ContextApp, initialState, reducer} from "./reducer/reducer";
+import {setDispatch} from "./reducer/actions";
 
 const likeStorageAddress = '0x6A7c14bD5384e2eb8515a5B7298cF1ec5d63aD59';
 // todo move to global settings shared with other apps
@@ -1095,6 +1093,11 @@ const likeLogicAbi = [
     }
 ];
 
+function isLogged() {
+    const accessToken = localStorage.getItem('access_token');
+    return !!accessToken;
+}
+
 function NoMatch() {
     return (
         <div>
@@ -1107,16 +1110,33 @@ function NoMatch() {
     );
 }
 
+function PrivateRoute({children, ...rest}) {
+    const {computedMatch} = {...rest};
+    const renderItem = (location) => isLogged() ?
+        children
+        : (
+            <Redirect
+                to={{
+                    pathname: `${computedMatch.url}/login`,
+                    state: {from: location}
+                }}
+            />
+        );
+
+    return <Route {...rest} render={({location}) => renderItem(location)}/>;
+}
+
 function App() {
     const [isResourcesLoading, setIsResourcesLoading] = useState(false);
     const [resources, setResources] = useState(null);
     const [userInfo, setUserInfo] = useState(null);
     const [accessToken, setAccessToken] = useState(null);
-    const [getLoginInstance, setGetLoginInstance] = useState(null);
     const history = useHistory();
+    const [state, dispatch] = useReducer(reducer, initialState);
+    setDispatch(dispatch);
 
     useEffect(_ => {
-        updateResources();
+        console.log('App useeffect')
 
         const token = localStorage.getItem('access_token');
         if (token) {
@@ -1142,52 +1162,34 @@ function App() {
         setTimeout(_ => setIsResourcesLoading(false), 2000);
     }
 
-    function isLogged() {
-        const accessToken = localStorage.getItem('access_token');
-        return !!accessToken;
-    }
-
-    function PrivateRoute({children, ...rest}) {
-        const {computedMatch} = {...rest};
-        const renderItem = (location) => isLogged() ?
-            children
-            : (
-                <Redirect
-                    to={{
-                        pathname: `${computedMatch.url}/login`,
-                        state: {from: location}
-                    }}
-                />
-            );
-
-        return <Route {...rest} render={({location}) => renderItem(location)}/>;
-    }
-
     return (
-        <Router>
-            <Switch>
-                <Route path="/:swarm_protocol/:swarm_hash/login" render={params => {
-                    const {match} = params;
-                    console.log(params);
-                    return isLogged() ? <Redirect to={`/${match.params.swarm_protocol}/${match.params.swarm_hash}`}/> :
-                        <LoginTemplate onAuthorized={onAuthorized}/>;
-                }}>
-                </Route>
+        <ContextApp.Provider value={{dispatch, state}}>
+            <Router>
+                <Switch>
+                    <Route path="/:swarm_protocol/:swarm_hash/login" render={params => {
+                        const {match} = params;
+                        console.log(params);
+                        return isLogged() ?
+                            <Redirect to={`/${match.params.swarm_protocol}/${match.params.swarm_hash}`}/> :
+                            <LoginTemplate onAuthorized={onAuthorized}/>;
+                    }}>
+                    </Route>
 
-                <PrivateRoute path="/:swarm_protocol/:swarm_hash">
-                    <MainTemplate
-                        onLogout={onLogout}
-                        isResourcesLoading={isResourcesLoading}
-                        updateResources={updateResources}
-                        resources={resources}
-                    />
-                </PrivateRoute>
+                    <PrivateRoute path="/:swarm_protocol/:swarm_hash">
+                        <MainTemplate
+                            onLogout={onLogout}
+                            isResourcesLoading={isResourcesLoading}
+                            updateResources={updateResources}
+                            resources={resources}
+                        />
+                    </PrivateRoute>
 
-                <Route path="*">
-                    <NoMatch/>
-                </Route>
-            </Switch>
-        </Router>
+                    <Route path="*">
+                        <NoMatch/>
+                    </Route>
+                </Switch>
+            </Router>
+        </ContextApp.Provider>
     );
 }
 

@@ -1,24 +1,25 @@
-import React, {Fragment, useEffect} from 'react';
-import icon from './img/icon.png';
+import React, {Fragment, useContext, useEffect} from 'react';
+import icon from './img/icon-512-white.png';
 import {Link, Route, Switch, useRouteMatch} from "react-router-dom";
 import Dashboard from "./Dashboard";
 import ResourceView from "./resource/ResourceView";
+import ResourceCreate from "./resource/ResourceCreate";
+import {ContextApp} from "./reducer/reducer";
+import {actionUpdateResources} from "./reducer/actions";
+import userCircle from './img/user-circle.png';
 
-export default function MainTemplate({
-                                         onLogout,
-                                         resources,
-                                         updateResources,
-                                         isResourcesLoading
-                                     }) {
+export default function MainTemplate({onLogout,}) {
     let {path, url} = useRouteMatch();
     const match = useRouteMatch(path + '/:page?/:action?/:id?');
+    const {state: {resources}} = useContext(ContextApp);
+    const {state: {user: {username}}} = useContext(ContextApp);
+
     const currentPage = match.params.page;
     const currentAction = match.params.action;
     const currentId = match.params.id;
 
     useEffect(_ => {
-        console.log('updateResources')
-        //updateResources();
+        actionUpdateResources()
     }, []);
 
     return <Fragment>
@@ -27,7 +28,7 @@ export default function MainTemplate({
                 <Link className="sidebar-brand d-flex align-items-center justify-content-center" to={`${url}`}>
                     <div className="sidebar-brand-icon">
                         {/*<i className="fas fa-laugh-wink"></i>*/}
-                        <img src={icon} alt=""/>
+                        <img className={"MainTemplate-icon"} src={icon} alt=""/>
                     </div>
                     <div className="sidebar-brand-text mx-3">Like</div>
                 </Link>
@@ -43,12 +44,12 @@ export default function MainTemplate({
 
                 <hr className="sidebar-divider"/>
 
-                <div className="sidebar-heading">
+                {/*<div className="sidebar-heading">
                     Interface
-                </div>
+                </div>*/}
 
                 <li className={`nav-item ${currentPage === 'resource' ? 'active' : ''}`}>
-                    <a className="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+                    <a className="nav-link collapsed" href="#a" data-toggle="collapse" data-target="#collapseTwo"
                        aria-expanded="true" aria-controls="collapseTwo">
                         <i className="fas fa-fw fa-cog"/>
                         <span>Resources</span>
@@ -56,7 +57,9 @@ export default function MainTemplate({
                     <div id="collapseTwo" className="collapse" aria-labelledby="headingTwo"
                          data-parent="#accordionSidebar">
                         <div className="bg-white py-2 collapse-inner rounded">
-                            <h6 className="collapse-header">Resources:</h6>
+                            <Link to={`${url}/resource/create`} className="collapse-header">
+                                <i className="fas fa-plus"/> Create resource
+                            </Link>
                             {resources && resources.map((item, i) => {
                                 return <Link
                                     key={i}
@@ -188,10 +191,11 @@ export default function MainTemplate({
                             </li>
 
                             <li className="nav-item dropdown no-arrow mx-1">
-                                <a className="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                <a className="nav-link dropdown-toggle" href="#a" id="alertsDropdown" role="button"
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i className="fas fa-bell fa-fw"></i>
-                                    <span className="badge badge-danger badge-counter">3+</span>
+                                    <i className="fas fa-bell fa-fw"/>
+                                    {/*<span className="badge badge-danger badge-counter">3+</span>*/}
+                                    <span className="badge badge-danger badge-counter">1</span>
                                 </a>
                                 <div
                                     className="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -199,21 +203,21 @@ export default function MainTemplate({
                                     <h6 className="dropdown-header">
                                         Alerts Center
                                     </h6>
-                                    <a className="dropdown-item d-flex align-items-center" href="#">
+                                    <a className="dropdown-item d-flex align-items-center" href="#a">
                                         <div className="mr-3">
                                             <div className="icon-circle bg-primary">
-                                                <i className="fas fa-file-alt text-white"></i>
+                                                <i className="fas fa-file-alt text-white"/>
                                             </div>
                                         </div>
                                         <div>
                                             <div className="small text-gray-500">December 12, 2019</div>
-                                            <span className="font-weight-bold">A new monthly report is ready to download!</span>
+                                            <span className="font-weight-bold">Welcome!</span>
                                         </div>
                                     </a>
-                                    <a className="dropdown-item d-flex align-items-center" href="#">
+                                    {/*<a className="dropdown-item d-flex align-items-center" href="#a">
                                         <div className="mr-3">
                                             <div className="icon-circle bg-success">
-                                                <i className="fas fa-donate text-white"></i>
+                                                <i className="fas fa-donate text-white"/>
                                             </div>
                                         </div>
                                         <div>
@@ -221,34 +225,36 @@ export default function MainTemplate({
                                             $290.29 has been deposited into your account!
                                         </div>
                                     </a>
-                                    <a className="dropdown-item d-flex align-items-center" href="#">
+                                    <a className="dropdown-item d-flex align-items-center" href="#a">
                                         <div className="mr-3">
                                             <div className="icon-circle bg-warning">
-                                                <i className="fas fa-exclamation-triangle text-white"></i>
+                                                <i className="fas fa-exclamation-triangle text-white"/>
                                             </div>
                                         </div>
                                         <div>
                                             <div className="small text-gray-500">December 2, 2019</div>
                                             Spending Alert: We've noticed unusually high spending for your account.
                                         </div>
-                                    </a>
-                                    <a className="dropdown-item text-center small text-gray-500" href="#">Show All
-                                        Alerts</a>
+                                    </a>*/}
+                                    {/*<a className="dropdown-item text-center small text-gray-500" href="#a">
+                                        Show All Alerts
+                                    </a>*/}
                                 </div>
                             </li>
 
-                            <div className="topbar-divider d-none d-sm-block"></div>
+                            <div className="topbar-divider d-none d-sm-block"/>
 
                             <li className="nav-item dropdown no-arrow">
-                                <a className="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                <a className="nav-link dropdown-toggle" href="#a" id="userDropdown" role="button"
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span className="mr-2 d-none d-lg-inline text-gray-600 small">Valerie Luna</span>
-                                    <img className="img-profile rounded-circle"
-                                         src="https://source.unsplash.com/QAB-WJcbgJk/60x60"/>
+                                    <span className="mr-2 d-none d-lg-inline text-gray-600 small">
+                                        {username ? username : '...'}
+                                    </span>
+                                    <img className="img-profile rounded-circle" src={userCircle} alt="User avatar"/>
                                 </a>
                                 <div className="dropdown-menu dropdown-menu-right shadow animated--grow-in"
                                      aria-labelledby="userDropdown">
-                                    <a className="dropdown-item" href="#">
+                                    {/*<a className="dropdown-item" href="#">
                                         <i className="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                                         Profile
                                     </a>
@@ -260,12 +266,12 @@ export default function MainTemplate({
                                         <i className="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
                                         Activity Log
                                     </a>
-                                    <div className="dropdown-divider"></div>
-                                    <a className="dropdown-item" href="#" data-toggle="modal"
-                                       data-target="#logoutModal">
-                                        <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                    <div className="dropdown-divider"></div>*/}
+                                    <button className="dropdown-item" data-toggle="modal"
+                                            data-target="#logoutModal">
+                                        <i className="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"/>
                                         Logout
-                                    </a>
+                                    </button>
                                 </div>
                             </li>
 
@@ -277,13 +283,15 @@ export default function MainTemplate({
 
                         <Switch>
                             <Route exact path={`${path}`}>
-                                <Dashboard
-                                    isLoading={isResourcesLoading}
-                                    resources={resources}
-                                    onUpdate={updateResources}/>
+                                <Dashboard/>
                             </Route>
+
                             <Route path={`${path}/resource/view/:id`}>
                                 <ResourceView/>
+                            </Route>
+
+                            <Route path={`${path}/resource/create`}>
+                                <ResourceCreate/>
                             </Route>
                         </Switch>
                     </div>
@@ -302,7 +310,7 @@ export default function MainTemplate({
         </div>
 
         <a className="scroll-to-top rounded" href="#page-top">
-            <i className="fas fa-angle-up"></i>
+            <i className="fas fa-angle-up"/>
         </a>
 
         <div className="modal fade" id="logoutModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel"

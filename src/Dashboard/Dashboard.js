@@ -1,12 +1,17 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useContext, useState} from 'react';
+import {Link, useRouteMatch} from "react-router-dom";
+import {ContextApp} from "../reducer/reducer";
 
-export default function Dashboard({onUserInfo}) {
+export default function Dashboard() {
+    let {path, url} = useRouteMatch();
+    const {state: {resources}} = useContext(ContextApp);
+
     return <Fragment>
         <div className="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 className="h3 mb-0 text-gray-800">Dashboard</h1>
-            <a href="#" className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
-                <i className="fas fa-download fa-sm text-white-50"/> Create resource
-            </a>
+            <Link to={`${url}/resource/create`} className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+                <i className="fas fa-plus fa-sm text-white-50"/> Create resource
+            </Link>
         </div>
 
         <div className="row">
@@ -17,13 +22,13 @@ export default function Dashboard({onUserInfo}) {
                         <div className="row no-gutters align-items-center">
                             <div className="col mr-2">
                                 <div
-                                    className="text-xs font-weight-bold text-primary text-uppercase mb-1">Earnings
-                                    (Monthly)
+                                    className="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Total likes
                                 </div>
-                                <div className="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                                <div className="h5 mb-0 font-weight-bold text-gray-800">40,000</div>
                             </div>
                             <div className="col-auto">
-                                <i className="fas fa-calendar fa-2x text-gray-300"></i>
+                                <i className="fas fa-calendar fa-2x text-gray-300"/>
                             </div>
                         </div>
                     </div>
@@ -35,14 +40,13 @@ export default function Dashboard({onUserInfo}) {
                     <div className="card-body">
                         <div className="row no-gutters align-items-center">
                             <div className="col mr-2">
-                                <div
-                                    className="text-xs font-weight-bold text-success text-uppercase mb-1">Earnings
-                                    (Annual)
+                                <div className="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Donates
                                 </div>
-                                <div className="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
+                                <div className="h5 mb-0 font-weight-bold text-gray-800">148 ETH</div>
                             </div>
                             <div className="col-auto">
-                                <i className="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                <i className="fas fa-dollar-sign fa-2x text-gray-300"/>
                             </div>
                         </div>
                     </div>
@@ -54,27 +58,13 @@ export default function Dashboard({onUserInfo}) {
                     <div className="card-body">
                         <div className="row no-gutters align-items-center">
                             <div className="col mr-2">
-                                <div
-                                    className="text-xs font-weight-bold text-info text-uppercase mb-1">Tasks
+                                <div className="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    Resources
                                 </div>
-                                <div className="row no-gutters align-items-center">
-                                    <div className="col-auto">
-                                        <div
-                                            className="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%
-                                        </div>
-                                    </div>
-                                    <div className="col">
-                                        <div className="progress progress-sm mr-2">
-                                            <div className="progress-bar bg-info" role="progressbar"
-                                                 style={{width: '50%'}} aria-valuenow="50"
-                                                 aria-valuemin="0"
-                                                 aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <div className="h5 mb-0 font-weight-bold text-gray-800">{resources.length}</div>
                             </div>
                             <div className="col-auto">
-                                <i className="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                <i className="fas fa-dollar-sign fa-2x text-gray-300"/>
                             </div>
                         </div>
                     </div>
@@ -102,7 +92,7 @@ export default function Dashboard({onUserInfo}) {
         </div>
 
 
-        <div className="row">
+        {/*<div className="row">
 
             <div className="col-xl-8 col-lg-7">
                 <div className="card shadow mb-4">
@@ -170,9 +160,9 @@ export default function Dashboard({onUserInfo}) {
                     </div>
                 </div>
             </div>
-        </div>
+        </div>*/}
 
-        <div className="row">
+        {/*<div className="row">
 
             <div className="col-lg-6 mb-4">
 
@@ -184,35 +174,35 @@ export default function Dashboard({onUserInfo}) {
                         <h4 className="small font-weight-bold">Server Migration <span
                             className="float-right">20%</span></h4>
                         <div className="progress mb-4">
-                            {/*<div className="progress-bar bg-danger" role="progressbar"
+                            <div className="progress-bar bg-danger" role="progressbar"
                                                  style="width: 20%" aria-valuenow="20" aria-valuemin="0"
-                                                 aria-valuemax="100"></div>*/}
+                                                 aria-valuemax="100"></div>
                         </div>
                         <h4 className="small font-weight-bold">Sales Tracking <span
                             className="float-right">40%</span></h4>
                         <div className="progress mb-4">
-                            {/*<div className="progress-bar bg-warning" role="progressbar"
+                            <div className="progress-bar bg-warning" role="progressbar"
                                                  style="width: 40%" aria-valuenow="40" aria-valuemin="0"
-                                                 aria-valuemax="100"></div>*/}
+                                                 aria-valuemax="100"></div>
                         </div>
                         <h4 className="small font-weight-bold">Customer Database <span
                             className="float-right">60%</span></h4>
                         <div className="progress mb-4">
-                            {/*<div className="progress-bar" role="progressbar" style="width: 60%"
-                                                 aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                            <div className="progress-bar" role="progressbar" style="width: 60%"
+                                                 aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                         <h4 className="small font-weight-bold">Payout Details <span
                             className="float-right">80%</span></h4>
                         <div className="progress mb-4">
-                            {/*<div className="progress-bar bg-info" role="progressbar" style="width: 80%"
-                                                 aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>*/}
+                            <div className="progress-bar bg-info" role="progressbar" style="width: 80%"
+                                                 aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                         <h4 className="small font-weight-bold">Account Setup <span
                             className="float-right">Complete!</span></h4>
                         <div className="progress">
-                            {/*<div className="progress-bar bg-success" role="progressbar"
+                            <div className="progress-bar bg-success" role="progressbar"
                                                  style="width: 100%" aria-valuenow="100" aria-valuemin="0"
-                                                 aria-valuemax="100"></div>*/}
+                                                 aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -304,6 +294,6 @@ export default function Dashboard({onUserInfo}) {
                 </div>
 
             </div>
-        </div>
+        </div>*/}
     </Fragment>;
 }
