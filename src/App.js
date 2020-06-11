@@ -14,6 +14,7 @@ import MainTemplate from "./MainTemplate";
 import LoginTemplate from "./LoginTemplate";
 import {ContextApp, initialState, reducer} from "./reducer/reducer";
 import {setDispatch} from "./reducer/actions";
+import GetLoginInit, {STATUS_LOGIN_AUTH_REQUIRED, STATUS_LOGIN_SUCCESS} from "./GetLoginInit";
 
 const likeStorageAddress = '0x6A7c14bD5384e2eb8515a5B7298cF1ec5d63aD59';
 // todo move to global settings shared with other apps
@@ -1093,11 +1094,6 @@ const likeLogicAbi = [
     }
 ];
 
-function isLogged() {
-    const accessToken = localStorage.getItem('access_token');
-    return !!accessToken;
-}
-
 function NoMatch() {
     return (
         <div>
@@ -1110,9 +1106,9 @@ function NoMatch() {
     );
 }
 
-function PrivateRoute({children, ...rest}) {
+function PrivateRoute({children, isLogged, ...rest}) {
     const {computedMatch} = {...rest};
-    const renderItem = (location) => isLogged() ?
+    const renderItem = (location) => isLogged ?
         children
         : (
             <Redirect
@@ -1126,34 +1122,75 @@ function PrivateRoute({children, ...rest}) {
     return <Route {...rest} render={({location}) => renderItem(location)}/>;
 }
 
+function getIsLogged() {
+    const accessToken = getAccessToken();
+    return !!accessToken;
+}
+
+function getAccessToken() {
+    return localStorage.getItem('access_token');
+}
+
+function setAccessToken(accessToken) {
+    if (accessToken) {
+        localStorage.setItem('access_token', accessToken);
+    } else {
+        localStorage.removeItem('access_token');
+    }
+}
+
 function App() {
     const [isResourcesLoading, setIsResourcesLoading] = useState(false);
     const [resources, setResources] = useState(null);
     const [userInfo, setUserInfo] = useState(null);
-    const [accessToken, setAccessToken] = useState(null);
+    //const [accessToken, setAccessToken] = useState(null);
+    const [getLoginStatus, setGetLoginStatus] = useState(null);
+    const [getLoginData, setGetLoginData] = useState(null);
+    const [isLogged, setIsLogged] = useState(false);
     const history = useHistory();
     const [state, dispatch] = useReducer(reducer, initialState);
     setDispatch(dispatch);
+    let getLoginInit = null;
+    const appId = 3;
 
     useEffect(_ => {
-        console.log('App useeffect')
+        console.log('Main useEffect');
 
-        const token = localStorage.getItem('access_token');
-        if (token) {
-            onAuthorized(token);
+        if (getIsLogged()) {
+            setIsLogged(true);
         }
+
+        const urlAccessToken = GetLoginInit.checkAccessTokenInUrl();
+        if (urlAccessToken) {
+            setAccessToken(urlAccessToken);
+            //window.location.replace('');
+            setIsLogged(true);
+            return;
+        }
+
+        const params = {appId, accessToken: getAccessToken()};
+        console.log(params);
+        getLoginInit = new GetLoginInit(params);
+        getLoginInit.onStatusChanged = (status, data) => {
+            console.log(status, data);
+            setGetLoginStatus(status);
+            setGetLoginData(data);
+
+            if (status === STATUS_LOGIN_SUCCESS) {
+                setAccessToken(data.data.access_token);
+            } else if (status === STATUS_LOGIN_AUTH_REQUIRED) {
+                setAccessToken(null);
+                setIsLogged(false);
+            }
+        };
+        setGetLoginStatus(getLoginInit.currentStatus);
+        getLoginInit.loadScript();
     }, []);
 
     function onLogout() {
-        localStorage.removeItem('access_token');
         setAccessToken(null);
-        setUserInfo(null);
-    }
-
-    function onAuthorized(accessToken, data) {
-        localStorage.setItem('access_token', accessToken);
-        setAccessToken(accessToken);
-        setUserInfo(data);
+        //setUserInfo(null);
+        window.location.replace('');
     }
 
     function updateResources() {
@@ -1162,6 +1199,8 @@ function App() {
         setTimeout(_ => setIsResourcesLoading(false), 2000);
     }
 
+    // todo check logged (and set to state) before app initialized or route init
+    console.log('is logged', isLogged)
     return (
         <ContextApp.Provider value={{dispatch, state}}>
             <Router>
@@ -1169,13 +1208,13 @@ function App() {
                     <Route path="/:swarm_protocol/:swarm_hash/login" render={params => {
                         const {match} = params;
                         console.log(params);
-                        return isLogged() ?
+                        return isLogged ?
                             <Redirect to={`/${match.params.swarm_protocol}/${match.params.swarm_hash}`}/> :
-                            <LoginTemplate onAuthorized={onAuthorized}/>;
+                            <LoginTemplate getLoginStatus={getLoginStatus} getLoginData={getLoginData}/>;
                     }}>
                     </Route>
 
-                    <PrivateRoute path="/:swarm_protocol/:swarm_hash">
+                    <PrivateRoute isLogged={isLogged} path="/:swarm_protocol/:swarm_hash">
                         <MainTemplate
                             onLogout={onLogout}
                             isResourcesLoading={isResourcesLoading}

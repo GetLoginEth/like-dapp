@@ -1,3 +1,8 @@
+export const STATUS_WAIT = 'getlogin_wait';
+export const STATUS_LOADING = 'getlogin_loading';
+export const STATUS_LOGIN_SUCCESS = 'getlogin_login_success';
+export const STATUS_LOGIN_AUTH_REQUIRED = 'getlogin_login_auth_required';
+
 export default class GetLoginInit {
     appId = null;
     isDev = false;
@@ -7,6 +12,8 @@ export default class GetLoginInit {
     abi = [];
     returnUrl = null;
     accessToken = null;
+    currentStatus = STATUS_WAIT;
+    onStatusChanged = null;
 
     constructor({appId, scriptUrl, appUrl, devScriptUrl, devAppUrl, returnUrl, abi = [], accessToken = null}) {
         this.appId = appId;
@@ -24,9 +31,19 @@ export default class GetLoginInit {
 
         window._onGetLoginApiLoaded = instance => {
             this.instance = instance;
-            init(instance);
+            this.init(instance);
         };
+    }
 
+    changeStatus(status, data = {}) {
+        this.currentStatus = status;
+        if (this.onStatusChanged) {
+            this.onStatusChanged(status, data);
+        }
+    }
+
+    loadScript() {
+        this.changeStatus(STATUS_LOADING);
         const s = window.document.createElement("script");
         s.type = "text/javascript";
         s.async = true;
@@ -38,32 +55,35 @@ export default class GetLoginInit {
         return window.location.href.replace(window.location.hash, '').replace('#', '');
     };
 
-    async init(instance) {
-        instance.setClientAbi(this.abi);
-        /*instance.setOnLogout(_ => {
-            setStatus('authorize');
-            setUser(null);
-            setAccessToken(null);
-            //window.location.replace('./');
-        });*/
+    static checkAccessTokenInUrl() {
+        const urlAccessToken = (new URLSearchParams(window.location.hash.replace('#', ''))).get('access_token');
+        if (urlAccessToken) {
+            return urlAccessToken;
+        }
 
+        return null;
+    }
+
+    async getAppLogicAddress(storageAddress, storageAbi, logicAbi, field = 'logicAddress') {
+        this.instance.setClientAbi(storageAbi);
+        const likeLogicAddress = await this.instance.callContractMethod(storageAddress, field);
+        this.instance.setClientAbi(logicAbi);
+
+        return likeLogicAddress;
+    }
+
+    async init(instance) {
         const data = await instance.init(this.appId, this.appUrl, this.returnUrl, this.accessToken);
         console.log(data);
         if (!data.result) {
-            //alert('Error: not initialized');
             return;
         }
 
-        //setAuthorizeUrl(data.data.authorize_url);
         if (data.data.is_client_allowed) {
-            setStatus('authorized');
-            //setAccessToken(data.data.access_token);
             const userInfo = await instance.getUserInfo();
-            setUser(userInfo);
-            //updateNotes(userInfo.usernameHash);
-            onAuthorized(data.data.access_token, userInfo);
+            this.changeStatus(STATUS_LOGIN_SUCCESS, {userInfo, data: data.data});
         } else {
-            setStatus('authorize');
+            this.changeStatus(STATUS_LOGIN_AUTH_REQUIRED, {data: data.data});
         }
     }
 }
