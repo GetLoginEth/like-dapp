@@ -38,7 +38,7 @@ export default class GetLoginInit {
     changeStatus(status, data = {}) {
         this.currentStatus = status;
         if (this.onStatusChanged) {
-            this.onStatusChanged(status, data);
+            this.onStatusChanged(status, data, this.instance);
         }
     }
 
@@ -64,7 +64,7 @@ export default class GetLoginInit {
         return null;
     }
 
-    async getAppLogicAddress(storageAddress, storageAbi, logicAbi, field = 'logicAddress') {
+    async getAppLogicAddress({storageAddress, storageAbi, logicAbi, field = 'logicAddress'}) {
         this.instance.setClientAbi(storageAbi);
         const likeLogicAddress = await this.instance.callContractMethod(storageAddress, field);
         this.instance.setClientAbi(logicAbi);

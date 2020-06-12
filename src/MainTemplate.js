@@ -171,7 +171,7 @@ export default function MainTemplate({onLogout,}) {
                             <li className="nav-item dropdown no-arrow d-sm-none">
                                 <a className="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button"
                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i className="fas fa-search fa-fw"></i>
+                                    <i className="fas fa-search fa-fw"/>
                                 </a>
                                 <div className="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in"
                                      aria-labelledby="searchDropdown">
@@ -182,7 +182,7 @@ export default function MainTemplate({onLogout,}) {
                                                    aria-describedby="basic-addon2"/>
                                             <div className="input-group-append">
                                                 <button className="btn btn-primary" type="button">
-                                                    <i className="fas fa-search fa-sm"></i>
+                                                    <i className="fas fa-search fa-sm"/>
                                                 </button>
                                             </div>
                                         </div>
