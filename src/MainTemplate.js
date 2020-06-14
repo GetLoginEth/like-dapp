@@ -64,12 +64,15 @@ export default function MainTemplate({onLogout,}) {
                                 <i className="fas fa-plus"/> Create resource
                             </Link>
                             {resources && resources.map((item, i) => {
+                                const isActive = (currentAction === 'view' && Number(currentId) === Number(item.id));
+                                const classes = `collapse-item ${isActive ? 'active' : ''}`;
+                                const longText = item.isLoadedInfo ? (item.title.length > 14 ? item.title.slice(0, 14) + '...' : item.title) : '';
+                                const text = item.isLoadedInfo ? longText : '...';
                                 return <Link
                                     key={i}
-                                    className={`collapse-item 
-                                    ${(currentAction === 'view' && Number(currentId) === Number(item.id)) ? 'active' : ''}
-                                    `}
-                                    to={`${url}/resource/view/${item.id}`}>{item.isLoadedInfo ? item.title : '...'}</Link>;
+                                    className={classes}
+                                    to={`${url}/resource/view/${item.id}`}>{text}
+                                </Link>;
                             })}
                         </div>
                     </div>
