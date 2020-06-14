@@ -13,14 +13,17 @@ export default function MainTemplate({onLogout,}) {
     const match = useRouteMatch(path + '/:page?/:action?/:id?');
     const {state: {resources}} = useContext(ContextApp);
     const {state: {user: {username}}} = useContext(ContextApp);
+    const {state: {user: {usernameHash}}} = useContext(ContextApp);
 
     const currentPage = match.params.page;
     const currentAction = match.params.action;
     const currentId = match.params.id;
 
     useEffect(_ => {
-        actionUpdateResources()
-    }, []);
+        if (usernameHash) {
+            actionUpdateResources(usernameHash);
+        }
+    }, [usernameHash]);
 
     return <Fragment>
         <div id="wrapper">
@@ -66,7 +69,7 @@ export default function MainTemplate({onLogout,}) {
                                     className={`collapse-item 
                                     ${(currentAction === 'view' && Number(currentId) === Number(item.id)) ? 'active' : ''}
                                     `}
-                                    to={`${url}/resource/view/${item.id}`}>{item.title}</Link>;
+                                    to={`${url}/resource/view/${item.id}`}>{item.isLoadedInfo ? item.title : '...'}</Link>;
                             })}
                         </div>
                     </div>

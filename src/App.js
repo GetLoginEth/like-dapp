@@ -13,7 +13,7 @@ import {
 import MainTemplate from "./MainTemplate";
 import LoginTemplate from "./LoginTemplate";
 import {ContextApp, initialState, reducer} from "./reducer/reducer";
-import {setDispatch} from "./reducer/actions";
+import {actionSetUserInfo, setDispatch} from "./reducer/actions";
 import GetLoginInit, {STATUS_LOGIN_AUTH_REQUIRED, STATUS_LOGIN_SUCCESS} from "./GetLoginInit";
 import LikeContract from "./like/LikeContract";
 
@@ -62,7 +62,7 @@ function setAccessToken(accessToken) {
     }
 }
 
-let likeContract =  LikeContract.getInstance();
+let likeContract = LikeContract.getInstance();
 
 function App() {
     const [isResourcesLoading, setIsResourcesLoading] = useState(false);
@@ -94,10 +94,10 @@ function App() {
         }
 
         const params = {appId, accessToken: getAccessToken()};
-        console.log(params);
+        //console.log(params);
         getLoginInit = new GetLoginInit(params);
         getLoginInit.onStatusChanged = async (status, data, getLoginInstance) => {
-            console.log(status, data);
+            console.log('onStatusChanged', status, data);
             setGetLoginStatus(status);
             setGetLoginData(data);
 
@@ -112,6 +112,7 @@ function App() {
 
                     likeContract.setLikeLogicAddress(logicAddress);
                     likeContract.setGetLoginInstance(getLoginInstance);
+                    actionSetUserInfo(data.userInfo);
                 }
             } else if (status === STATUS_LOGIN_AUTH_REQUIRED) {
                 setAccessToken(null);

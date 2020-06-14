@@ -41,11 +41,23 @@ export default class LikeContract {
 
     async createResourceType(title, url, description) {
         this.checkIsReady();
+        this.getLoginInstance.setClientAbi(this.likeLogicAbi);
         return this.getLoginInstance.sendTransaction(this.likeLogicAddress, 'createResourceType', [title, description, url], {resolveMethod: 'mined'})
     }
 
-    async getResourcesType() {
+    async getResourcesType(usernameHash) {
         this.checkIsReady();
-        // todo check is implemented receiving list of resources type - implement
+        this.getLoginInstance.setClientAbi(this.likeStorageAbi);
+        return this.getLoginInstance.getPastEvents(this.likeStorageAddress, 'EventResourceTypeCreated', {
+            filter: {
+                usernameHash,
+            },
+            fromBlock: 0
+        });
+    }
+
+    async getResourceType(id) {
+        this.getLoginInstance.setClientAbi(this.likeStorageAbi);
+        return this.getLoginInstance.callContractMethod(this.likeStorageAddress, 'getResourceType', id);
     }
 }
