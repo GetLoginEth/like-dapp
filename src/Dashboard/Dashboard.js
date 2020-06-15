@@ -43,7 +43,7 @@ export default function Dashboard() {
                                 <div className="text-xs font-weight-bold text-success text-uppercase mb-1">
                                     Donates
                                 </div>
-                                <div className="h5 mb-0 font-weight-bold text-gray-800">148 ETH</div>
+                                <div className="h5 mb-0 font-weight-bold text-gray-800">0 ETH</div>
                             </div>
                             <div className="col-auto">
                                 <i className="fas fa-dollar-sign fa-2x text-gray-300"/>
@@ -64,7 +64,7 @@ export default function Dashboard() {
                                 <div className="h5 mb-0 font-weight-bold text-gray-800">{resources.length}</div>
                             </div>
                             <div className="col-auto">
-                                <i className="fas fa-dollar-sign fa-2x text-gray-300"/>
+                                <i className="fas fa-sitemap fa-2x text-gray-300"/>
                             </div>
                         </div>
                     </div>

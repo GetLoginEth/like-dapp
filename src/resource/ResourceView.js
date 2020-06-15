@@ -3,8 +3,10 @@ import './Resource.css';
 import {useRouteMatch} from "react-router-dom";
 import {ContextApp} from "../reducer/reducer";
 import Spinner from "../Spinner";
+import {actionCreateResource} from "../reducer/actions";
+import ResourceForm from "./ResourceForm";
 
-function ResourceView() {
+export default function ResourceView() {
     const match = useRouteMatch();
     const {state: {resources}} = useContext(ContextApp);
     const id = Number(match.params.id);
@@ -12,18 +14,22 @@ function ResourceView() {
 
     return (
         <div className="ResourceView">
-            {!resource && <Spinner/>}
+            {(!resource || !resource.isLoadedInfo) && <Spinner/>}
 
-            {resource && <Fragment>
-                <p>
-                    Resource view id {id}
-                </p>
-                <p>{resource.title}</p>
-                <p>{resource.url}</p>
-                <p>{resource.description}</p>
-            </Fragment>}
+            {resource && resource.isLoadedInfo && <ResourceForm
+                key={resource.id}
+                id={resource.id}
+                title={resource.title}
+                url={resource.url}
+                description={resource.description}
+                readOnly={true}
+                onSubmit={async ({id, title, url, description}) => {
+                    alert('save here');
+                    /*const result = await actionCreateResource(usernameHash, title, url, description)
+                    if (result) {
+                        return 'reset';
+                    }*/
+                }}/>}
         </div>
     );
-}
-
-export default ResourceView;
+};
