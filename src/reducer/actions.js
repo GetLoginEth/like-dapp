@@ -11,7 +11,7 @@ export function setDispatch(func) {
 }
 
 export async function actionUpdateResources(usernameHash) {
-    dispatch({type: Names.ACTION_SET_IN_PROCESS, payload: true});
+    //dispatch({type: Names.ACTION_SET_IN_PROCESS, payload: true});
     try {
         const data = await likeContractInstance.getResourcesType(usernameHash)
         const payload = ResourceTypeModel.parseTxData(data);
@@ -27,19 +27,28 @@ export async function actionUpdateResources(usernameHash) {
     } catch (e) {
         dispatch({type: Names.ACTION_SET_ERROR, payload: e.message})
     }
+    //dispatch({type: Names.ACTION_SET_IN_PROCESS, payload: false});
 }
 
 export function actionSetUserInfo(payload) {
     dispatch({type: Names.ACTION_SET_USER, payload});
 }
 
-export function actionCreateResource(title, url, description) {
+export async function actionCreateResource(usernameHash, title, url, description) {
+    let result = true;
     dispatch({type: Names.ACTION_SET_IN_PROCESS, payload: true});
-    likeContractInstance.createResourceType(title, url, description)
-        .then(tx => {
-            console.log(tx.blockHash);
-            dispatch({type: Names.ACTION_CREATE_RESOURCE, payload: {title, url, description}});
-            dispatch({type: Names.ACTION_SET_IN_PROCESS, payload: false});
-        })
-        .catch(e => dispatch({type: Names.ACTION_SET_ERROR, payload: e.message}));
+    const tx = await likeContractInstance.createResourceType(title, url, description)
+    try {
+        console.log(tx);
+        //dispatch({type: Names.ACTION_CREATE_RESOURCE, payload: {title, url, description}});
+        dispatch({type: Names.ACTION_SET_IN_PROCESS, payload: false});
+        await actionUpdateResources(usernameHash);
+    } catch (e) {
+        dispatch({type: Names.ACTION_SET_ERROR, payload: e.message});
+        result = false;
+    }
+
+    dispatch({type: Names.ACTION_SET_IN_PROCESS, payload: false});
+
+    return result;
 }
