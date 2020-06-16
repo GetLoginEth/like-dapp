@@ -1103,7 +1103,7 @@
 
 "@getlogin/like@https://github.com/GetLoginEth/like.git":
   version "1.0.0"
-  resolved "https://github.com/GetLoginEth/like.git#d035661b8433899c4b0857d567869bebeece2096"
+  resolved "https://github.com/GetLoginEth/like.git#5644aed250a10ac522896d0b96f74518e9d2fe89"
 
 "@hapi/address@2.x.x":
   version "2.1.4"
