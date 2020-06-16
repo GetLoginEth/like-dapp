@@ -45,6 +45,12 @@ export default class LikeContract {
         return this.getLoginInstance.sendTransaction(this.likeLogicAddress, 'createResourceType', [title, description, url], {resolveMethod: 'mined'})
     }
 
+    async editResourceType(id, title, url, description) {
+        this.checkIsReady();
+        this.getLoginInstance.setClientAbi(this.likeLogicAbi);
+        return this.getLoginInstance.sendTransaction(this.likeLogicAddress, 'editResourceType', [id, title, description, url], {resolveMethod: 'mined'})
+    }
+
     async getResourcesType(usernameHash) {
         this.checkIsReady();
         this.getLoginInstance.setClientAbi(this.likeStorageAbi);

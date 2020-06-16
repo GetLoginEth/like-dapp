@@ -52,3 +52,21 @@ export async function actionCreateResource(usernameHash, title, url, description
 
     return result;
 }
+
+export async function actionEditResource(usernameHash, id, title, url, description) {
+    let result = true;
+    dispatch({type: Names.ACTION_SET_IN_PROCESS, payload: true});
+    const tx = await likeContractInstance.editResourceType(id, title, url, description)
+    try {
+        console.log(tx);
+        dispatch({type: Names.ACTION_SET_IN_PROCESS, payload: false});
+        await actionUpdateResources(usernameHash);
+    } catch (e) {
+        dispatch({type: Names.ACTION_SET_ERROR, payload: e.message});
+        result = false;
+    }
+
+    dispatch({type: Names.ACTION_SET_IN_PROCESS, payload: false});
+
+    return result;
+}
