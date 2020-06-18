@@ -24,17 +24,28 @@ export default function ResourceForm(params) {
             }
         }}>
             <fieldset disabled={inProcess}>
+                {id && <div className="form-group">
+                    <label>ID</label>
+                    <input type="text" className="form-control form-control-user" placeholder="ID" value={id}
+                           readOnly={true}/>
+                </div>}
+
                 <div className="form-group">
+                    <label>Title</label>
+
                     <input type="text" className="form-control form-control-user" placeholder="Title" value={title}
                            onChange={e => setTitle(e.target.value)}/>
                 </div>
 
                 <div className="form-group">
+                    <label>URL</label>
+
                     <input type="text" className="form-control form-control-user" placeholder="URL" value={url}
                            onChange={e => setUrl(e.target.value)}/>
                 </div>
 
                 <div className="form-group">
+                    <label>Description</label>
                     <textarea className="form-control " placeholder="Description" value={description}
                               onChange={e => setDescription(e.target.value)}/>
                 </div>
