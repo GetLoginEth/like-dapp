@@ -13,7 +13,6 @@ export default function LoginTemplate({getLoginStatus, getLoginData}) {
     }, []);
 
     const isDisabledLoginButton = getLoginStatus !== STATUS_LOGIN_AUTH_REQUIRED;
-    console.log(getLoginStatus);
 
     return <Fragment>
         <div className="container">

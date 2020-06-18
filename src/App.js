@@ -67,12 +67,9 @@ let likeContract = LikeContract.getInstance();
 function App() {
     const [isResourcesLoading, setIsResourcesLoading] = useState(false);
     const [resources, setResources] = useState(null);
-    const [userInfo, setUserInfo] = useState(null);
-    //const [accessToken, setAccessToken] = useState(null);
     const [getLoginStatus, setGetLoginStatus] = useState(null);
     const [getLoginData, setGetLoginData] = useState(null);
     const [isLogged, setIsLogged] = useState(false);
-    const history = useHistory();
     const [state, dispatch] = useReducer(reducer, initialState);
     setDispatch(dispatch);
     let getLoginInit = null;
@@ -88,9 +85,6 @@ function App() {
         const urlAccessToken = GetLoginInit.checkAccessTokenInUrl();
         if (urlAccessToken) {
             setAccessToken(urlAccessToken);
-            //window.location.replace('');
-            setIsLogged(true);
-            return;
         }
 
         const params = {appId, accessToken: getAccessToken()};
