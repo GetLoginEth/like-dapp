@@ -26,25 +26,32 @@ export default function ResourceView() {
         <div className="ResourceView">
             {(!resource || !resource.isLoadedInfo) && <Spinner/>}
 
-            {resource && resource.isLoadedInfo && (isEdit ? <ResourceForm
-                    key={resource.id}
-                    id={resource.id}
-                    title={resource.title}
-                    url={resource.url}
-                    description={resource.description}
-                    readOnly={true}
-                    inProcess={inProcess}
-                    onSubmit={async ({id, title, url, description}) => {
-                        await actionEditResource(usernameHash, id, title, url, description)
-                    }}/> :
-                <Fragment>
-                    <h3>{resource.title} <i style={{fontSize: '1.2rem', cursor: 'pointer'}}
-                                            onClick={_ => setIsEdit(!isEdit)}
-                                            className="fa fa-edit"/></h3>
-                    <p>ID: {resource.id}</p>
-                    <p>Likes: {resource.reactions}</p>
-                    <p>Donates: {resource.donates}</p>
-                </Fragment>)}
+            {resource && resource.isLoadedInfo &&
+            <Fragment>
+                <h3>{resource.title} <i style={{cursor: 'pointer'}}
+                                        onClick={_ => setIsEdit(!isEdit)}
+                                        className={`fa ${isEdit ? 'fa-angle-up' : 'fa-angle-down'}`}/>
+                </h3>
+
+                {(isEdit ? <ResourceForm
+                        key={resource.id}
+                        id={resource.id}
+                        title={resource.title}
+                        url={resource.url}
+                        description={resource.description}
+                        readOnly={true}
+                        inProcess={inProcess}
+                        onSubmit={async ({id, title, url, description}) => {
+                            await actionEditResource(usernameHash, id, title, url, description)
+                        }}/> :
+                    <Fragment>
+
+                        <p>ID: {resource.id}</p>
+                        <p>Likes: {resource.reactions}</p>
+                        <p>Donates: {resource.donates}</p>
+                    </Fragment>)}
+            </Fragment>
+            }
         </div>
     );
 };
