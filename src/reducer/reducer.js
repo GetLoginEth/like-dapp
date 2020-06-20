@@ -11,7 +11,8 @@ export const initialState = {
         username: null,
         usernameHash: null,
         avatar: null
-    }
+    },
+    likes: {}
 };
 
 export const reducer = (state, action) => {
@@ -57,16 +58,28 @@ export const reducer = (state, action) => {
                 ...state,
                 user: action.payload
             };
+        case ACTION_SET_LIKES:
+            const resourceTypeId = action.payload.resourceTypeId;
+            const data = action.payload.data;
+            const resultData = {[resourceTypeId]: data};
+
+            return {
+                ...state,
+                likes: {...state.likes, ...resultData}
+            };
         default:
             return state
     }
 };
 
 export const ACTION_SET_RESOURCES = 'set_resources';
-export const ACTION_CREATE_RESOURCE = 'create_resource';
-export const ACTION_GET_RESOURCE = 'get_resource';
-export const ACTION_UPDATE_RESOURCE = 'update_resource';
-export const ACTION_DELETE_RESOURCE = 'delete_resource';
 export const ACTION_SET_IN_PROCESS = 'set_in_process';
 export const ACTION_SET_ERROR = 'set_error';
 export const ACTION_SET_USER = 'set_user';
+export const ACTION_SET_LIKES = 'set_likes';
+
+export const ACTION_GET_RESOURCE = 'get_resource';
+
+export const ACTION_UPDATE_RESOURCE = 'update_resource';
+export const ACTION_DELETE_RESOURCE = 'delete_resource';
+export const ACTION_CREATE_RESOURCE = 'create_resource';

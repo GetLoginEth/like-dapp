@@ -2,6 +2,7 @@ import React from "react";
 import * as Names from "./reducer";
 import LikeContract from "../like/LikeContract";
 import ResourceTypeModel from "../model/ResourceTypeModel";
+import ResourceLikeModel from "../model/ResourceLikeModel";
 
 let dispatch = null;
 let likeContractInstance = LikeContract.getInstance();
@@ -39,8 +40,6 @@ export async function actionCreateResource(usernameHash, title, url, description
     dispatch({type: Names.ACTION_SET_IN_PROCESS, payload: true});
     const tx = await likeContractInstance.createResourceType(title, url, description)
     try {
-        console.log(tx);
-        //dispatch({type: Names.ACTION_CREATE_RESOURCE, payload: {title, url, description}});
         dispatch({type: Names.ACTION_SET_IN_PROCESS, payload: false});
         await actionUpdateResources(usernameHash);
     } catch (e) {
@@ -69,4 +68,14 @@ export async function actionEditResource(usernameHash, id, title, url, descripti
     dispatch({type: Names.ACTION_SET_IN_PROCESS, payload: false});
 
     return result;
+}
+
+export async function actionGetLikes(resourceTypeId) {
+    try {
+        let data = await likeContractInstance.getLikes(resourceTypeId);
+        data = ResourceLikeModel.parseTxData(data);
+        dispatch({type: Names.ACTION_SET_LIKES, payload: {resourceTypeId, data}});
+    } catch (e) {
+        dispatch({type: Names.ACTION_SET_ERROR, payload: e.message})
+    }
 }

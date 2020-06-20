@@ -1,10 +1,7 @@
-export default class ResourceTypeModel {
-    id;
-    usernameHash;
+export default class ResourceLikeModel {
+    resourceIdHash;
+    resourceType;
     raw;
-    title;
-    description;
-    url;
     isLoadedInfo = false;
 
     constructor(data = {}) {
@@ -18,12 +15,12 @@ export default class ResourceTypeModel {
     /**
      *
      * @param data
-     * @returns ResourceTypeModel[]
+     * @returns ResourceLikeModel[]
      */
     static parseTxData(data) {
         return data.map(item => {
-            const {resourceType: id, usernameHash} = item.returnValues;
-            return new ResourceTypeModel({id, usernameHash, raw: item});
+            const {resourceType, resourceIdHash} = item.returnValues;
+            return new ResourceLikeModel({resourceType, resourceIdHash, raw: item});
         });
     }
 }

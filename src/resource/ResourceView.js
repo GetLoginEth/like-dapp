@@ -3,22 +3,25 @@ import './Resource.css';
 import {useRouteMatch} from "react-router-dom";
 import {ContextApp} from "../reducer/reducer";
 import Spinner from "../Spinner";
-import {actionEditResource} from "../reducer/actions";
+import {actionEditResource, actionGetLikes} from "../reducer/actions";
 import ResourceForm from "./ResourceForm";
+import WaitButton from "../WaitButton";
 
 export default function ResourceView() {
     const match = useRouteMatch();
     const {state: {inProcess}} = useContext(ContextApp);
     const {state: {resources}} = useContext(ContextApp);
+    const {state: {likes}} = useContext(ContextApp);
     const {state: {user: {usernameHash}}} = useContext(ContextApp);
 
     const [isEdit, setIsEdit] = useState(false);
+    const [isLoadLikes, setIsLoadLikes] = useState(false);
 
     const id = Number(match.params.id);
     const resource = resources.find(item => Number(item.id) === id);
+    const resourceLikes = likes[id];
 
     useEffect(_ => {
-        // todo update info about likes
         setIsEdit(false);
     }, [id]);
 
@@ -28,10 +31,10 @@ export default function ResourceView() {
 
             {resource && resource.isLoadedInfo &&
             <Fragment>
-                <h3>{resource.title} <i style={{cursor: 'pointer'}}
+                <h1>{resource.title} <i style={{cursor: 'pointer'}}
                                         onClick={_ => setIsEdit(!isEdit)}
                                         className={`fa ${isEdit ? 'fa-angle-up' : 'fa-angle-down'}`}/>
-                </h3>
+                </h1>
 
                 {(isEdit ? <ResourceForm
                         key={resource.id}
@@ -50,6 +53,24 @@ export default function ResourceView() {
                         <p>Likes: {resource.reactions}</p>
                         <p>Donates: {resource.donates}</p>
                     </Fragment>)}
+
+                <WaitButton disabled={isLoadLikes}>
+                    <button disabled={resource.reactions <= 0} className="btn btn-primary" onClick={_ => {
+                        setIsLoadLikes(true);
+                        actionGetLikes(resource.id)
+                            .then(_ => setIsLoadLikes(false));
+                    }}>
+                        Fetch likes
+                    </button>
+                </WaitButton>
+
+                <div className="mt-3">
+                    {resourceLikes && resourceLikes.map((item, i) => <p key={i}>
+                        <a target="_blank" href={`https://rinkeby.etherscan.io/tx/${item.raw.transactionHash}`}>
+                            {item.resourceIdHash}
+                        </a>
+                    </p>)}
+                </div>
             </Fragment>
             }
         </div>

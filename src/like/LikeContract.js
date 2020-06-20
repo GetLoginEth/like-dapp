@@ -62,6 +62,17 @@ export default class LikeContract {
         });
     }
 
+    async getLikes(resourceTypeId) {
+        this.checkIsReady();
+        this.getLoginInstance.setClientAbi(this.likeStorageAbi);
+        return this.getLoginInstance.getPastEvents(this.likeStorageAddress, 'EventLikeResource', {
+            filter: {
+                resourceType: resourceTypeId,
+            },
+            fromBlock: 0
+        });
+    }
+
     async getResourceType(id) {
         this.getLoginInstance.setClientAbi(this.likeStorageAbi);
         return this.getLoginInstance.callContractMethod(this.likeStorageAddress, 'getResourceType', id);
