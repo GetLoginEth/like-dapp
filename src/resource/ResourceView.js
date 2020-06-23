@@ -54,7 +54,7 @@ export default function ResourceView() {
                         <p>Donates: {resource.donates}</p>
                     </Fragment>)}
 
-                <WaitButton disabled={isLoadLikes}>
+                {!isEdit && <WaitButton disabled={isLoadLikes}>
                     <button disabled={resource.reactions <= 0} className="btn btn-primary" onClick={_ => {
                         setIsLoadLikes(true);
                         actionGetLikes(resource.id)
@@ -62,15 +62,15 @@ export default function ResourceView() {
                     }}>
                         Fetch likes
                     </button>
-                </WaitButton>
+                </WaitButton>}
 
-                <div className="mt-3">
+                {!isEdit && <div className="mt-3">
                     {resourceLikes && resourceLikes.map((item, i) => <p key={i}>
                         <a target="_blank" href={`https://rinkeby.etherscan.io/tx/${item.raw.transactionHash}`}>
                             {item.resourceIdHash}
                         </a>
                     </p>)}
-                </div>
+                </div>}
             </Fragment>
             }
         </div>
