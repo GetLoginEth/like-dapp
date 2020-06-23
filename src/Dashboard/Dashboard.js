@@ -25,7 +25,11 @@ export default function Dashboard() {
                                     className="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                     Total likes
                                 </div>
-                                <div className="h5 mb-0 font-weight-bold text-gray-800">0</div>
+                                <div className="h5 mb-0 font-weight-bold text-gray-800">
+                                    {resources && resources.every(item => item.isLoadedInfo) ? resources.reduce((sum, item) => {
+                                        return Number(sum) + Number(item.reactions);
+                                    }, 0) : '...'}
+                                </div>
                             </div>
                             <div className="col-auto">
                                 <i className="fas fa-calendar fa-2x text-gray-300"/>
@@ -61,7 +65,9 @@ export default function Dashboard() {
                                 <div className="text-xs font-weight-bold text-info text-uppercase mb-1">
                                     Resources
                                 </div>
-                                <div className="h5 mb-0 font-weight-bold text-gray-800">{resources.length}</div>
+                                <div className="h5 mb-0 font-weight-bold text-gray-800">
+                                    {resources ? resources.length : '...'}
+                                </div>
                             </div>
                             <div className="col-auto">
                                 <i className="fas fa-sitemap fa-2x text-gray-300"/>

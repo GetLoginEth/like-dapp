@@ -6,7 +6,7 @@ export const initialState = {
     inProcess: false,
     error: '',
 
-    resources: [],
+    resources: null,
     user: {
         username: null,
         usernameHash: null,
