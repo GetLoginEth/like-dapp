@@ -6,6 +6,7 @@ function Resources({resources, onUpdate, isLoading}) {
     useEffect(_ => {
         onUpdate();
     }, []);
+
     return (
         <div className="Resources">
             <header className="App-header">
