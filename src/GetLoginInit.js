@@ -22,11 +22,11 @@ export default class GetLoginInit {
         this.accessToken = accessToken;
         this.isDev = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
         if (this.isDev) {
-            this.scriptUrl = devScriptUrl || 'https://localhost:3000/api/last.js';
-            this.appUrl = devAppUrl || 'https://localhost:3000/bzz:/getlogin.eth/';
+            this.scriptUrl = devScriptUrl || 'https://getlogin.localhost:3000/api/last.js';
+            this.appUrl = devAppUrl || 'https://getlogin.localhost:3000/';
         } else {
-            this.scriptUrl = scriptUrl || 'https://swarm-gateways.net/bzz:/getlogin.eth/api/last.js';
-            this.appUrl = appUrl || 'https://swarm-gateways.net/bzz:/getlogin.eth/';
+            this.scriptUrl = scriptUrl || 'https://getlogin.swarm-gateways.net/api/last.js';
+            this.appUrl = appUrl || 'https://getlogin.swarm-gateways.net/';
         }
 
         window._onGetLoginApiLoaded = instance => {
