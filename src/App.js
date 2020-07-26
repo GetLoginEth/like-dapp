@@ -1,15 +1,11 @@
-import React, {useEffect, useState, useReducer} from 'react';
+import React, {useEffect, useReducer, useState} from 'react';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './App.css';
 import './css/sb-admin-2.min.css';
 import './js/sb-admin-2.js';
-import {
-    BrowserRouter as Router,
-    Switch,
-    Route, Redirect, useHistory
-} from "react-router-dom";
+import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
 import MainTemplate from "./MainTemplate";
 import LoginTemplate from "./LoginTemplate";
 import {ContextApp, initialState, reducer} from "./reducer/reducer";
@@ -76,8 +72,6 @@ function App() {
     const appId = 3;
 
     useEffect(_ => {
-        console.log('Main useEffect');
-
         if (getIsLogged()) {
             setIsLogged(true);
         }
