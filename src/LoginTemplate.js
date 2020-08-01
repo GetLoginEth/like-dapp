@@ -48,8 +48,7 @@ export default function LoginTemplate({getLoginStatus, getLoginData}) {
                                                         see statistics on the number of actions on the entire site
                                                         and
                                                         on each site resource.</p>
-                                                    <p>To manage resources, you must be registered with
-                                                        GetLogin.</p>
+                                                    <p>To manage resources, you must be registered in GetLogin.</p>
                                                     <p>Information about GetLogin project and receiving invites for
                                                         registration you can find on <a
                                                             href="https://github.com/GetLoginEth/login"
